@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Landing Site
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - Asteroid Terrain
+  - Lunar Lander
+  - Effects
+  - Background
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Asteroid Terrain
+    uniqueID: 3039564217
+    locked: 0
+  - name: Effects
+    uniqueID: 1535669707
+    locked: 0
+  - name: Lunar Lander
+    uniqueID: 1771370333
+    locked: 0
+  - name: Background
+    uniqueID: 1779559555
+    locked: 0
