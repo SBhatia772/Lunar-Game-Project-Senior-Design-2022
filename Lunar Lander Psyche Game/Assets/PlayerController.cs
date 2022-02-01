@@ -23,6 +23,8 @@ public class PlayerController : MonoBehaviour
 
     GameObject gas;
     GameObject ignition;
+    GameObject explosion;
+
 
 
     float getFuel()
@@ -33,9 +35,11 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         gas = GameObject.Find("Gas Propulltion 0");
-        ignition = GameObject.Find("Ignition"); 
+        ignition = GameObject.Find("Ignition");
+        explosion = GameObject.Find("Explosion");
         rb = GameObject.Find("Lunar Lander").GetComponent<Rigidbody2D>();
         rb.AddForce(transform.right * 50f);
+        explosion.GetComponent<Renderer>().enabled = false;
     }
 
     // Update is called once per frame
@@ -93,11 +97,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (velocity >= 0.2f || Vector2.Dot(transform.up, Vector2.down) >= -0.2f)
+        if (velocity >= 0.2f || Mathf.Cos(Vector2.Angle(transform.up, Vector2.down)) >= -0.5f)
         {
             gameOver = true;
             print("Game Over!");
-            EditorApplication.isPlaying = false;
+
+            StartCoroutine(Wait());
 
         }
         else if (landingSite == false && landed == false)
@@ -107,6 +112,22 @@ public class PlayerController : MonoBehaviour
         }
         
     }
+
+    IEnumerator Wait()
+    {
+        gas.GetComponent<Renderer>().enabled = false;
+        rb.GetComponent<Renderer>().enabled = false;
+        ignition.GetComponent<Renderer>().enabled = false;
+        explosion.GetComponent<Renderer>().enabled = true;
+
+        yield return new WaitForSeconds(0.1f);
+
+        explosion.GetComponent<Renderer>().enabled = false;
+
+        EditorApplication.isPlaying = false;
+    }
+
+
 
     IEnumerator WaitRoutine()
     {
