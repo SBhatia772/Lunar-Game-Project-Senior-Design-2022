@@ -97,7 +97,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (velocity >= 0.2f || Mathf.Cos(Vector2.Angle(transform.up, Vector2.down)) >= -0.5f)
+        if (velocity >= 0.2f || Mathf.Cos(Vector2.Angle(transform.up, Vector2.down)) >= -0.4f)
         {
             gameOver = true;
             print("Game Over!");
