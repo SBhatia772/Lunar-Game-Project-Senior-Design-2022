@@ -24,6 +24,10 @@ public class PlayerController : MonoBehaviour
     GameObject gas;
     GameObject ignition;
     GameObject explosion;
+    GameObject gameOverScreen;
+    GameObject lander;
+    GameObject quitButton;
+    GameObject retryButton;
 
 
 
@@ -34,18 +38,29 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        quitButton = GameObject.Find("Quit");
+        quitButton.GetComponent<Renderer>().enabled = false;
+        quitButton.SetActive(false);
+
+        retryButton = GameObject.Find("Retry");
+        retryButton.GetComponent<Renderer>().enabled = false;
+        retryButton.SetActive(false);
+
+        lander = GameObject.Find("Lunar Lander");
+        lander.SetActive(true);
+        gameOverScreen = GameObject.Find("GameOver Screen");
         gas = GameObject.Find("Gas Propulltion 0");
         ignition = GameObject.Find("Ignition");
         explosion = GameObject.Find("Explosion");
         rb = GameObject.Find("Lunar Lander").GetComponent<Rigidbody2D>();
         rb.AddForce(transform.right * 50f);
         explosion.GetComponent<Renderer>().enabled = false;
+        gameOverScreen.GetComponent<Renderer>().enabled = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-
         velocity = rb.velocity.magnitude;
 
         if (Input.GetKey(KeyCode.Space) && fuel > 0)
@@ -100,7 +115,9 @@ public class PlayerController : MonoBehaviour
         if (velocity >= 0.2f || Mathf.Cos(Vector2.Angle(transform.up, Vector2.down)) >= -0.4f)
         {
             gameOver = true;
-            print("Game Over!");
+            //print("Game Over!");
+
+            gameOverScreen.GetComponent<Renderer>().enabled = true;
 
             StartCoroutine(Wait());
 
@@ -109,6 +126,11 @@ public class PlayerController : MonoBehaviour
         {
             landed = true;
             StartCoroutine(CloseGame());
+        }
+
+        if(gameOver == true)
+        {
+            StartCoroutine(Wait());
         }
         
     }
@@ -124,8 +146,15 @@ public class PlayerController : MonoBehaviour
 
         explosion.GetComponent<Renderer>().enabled = false;
 
-        EditorApplication.isPlaying = false;
-    }
+        lander.SetActive(false);
+        quitButton.SetActive(true);
+        retryButton.SetActive(true);
+
+        quitButton.GetComponent<Renderer>().enabled = true;
+        retryButton.GetComponent<Renderer>().enabled = true;
+        
+        //Application.Quit();
+    } 
 
 
 
@@ -150,20 +179,21 @@ public class PlayerController : MonoBehaviour
         if (velocity >= 0.2f || Vector2.Dot(transform.up, Vector2.down) >= 0)
         {
             gameOver = true;
-            print("Game Over!");
-            EditorApplication.isPlaying = false;
+            //print("Game Over!");
 
+            StartCoroutine(Wait());
         }
 
         yield return new WaitForSeconds(3f);
+
         if (gameOver == false && landingSite == false) //we haven't reached a landing site but we have landed
         {
             score += 100;
-            print("Normal points");
+            //print("Normal points");
 
             yield return new WaitForSeconds(1f);
 
-            EditorApplication.isPlaying = false;
+            //show you win screen
         }
 
         

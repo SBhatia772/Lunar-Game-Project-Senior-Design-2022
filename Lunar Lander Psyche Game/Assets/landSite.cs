@@ -29,7 +29,7 @@ public class landSite : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        print("COllision!");
+        //print("COllision!");
 
         PlayerController.landingSite = true;
 
@@ -49,7 +49,7 @@ public class landSite : MonoBehaviour
         {
             player.gameOver = true;
             print("Game Over!");
-            EditorApplication.isPlaying = false;
+            
 
         }
 
@@ -62,7 +62,7 @@ public class landSite : MonoBehaviour
 
             yield return new WaitForSeconds(0.5f);
 
-            EditorApplication.isPlaying = false;
+            //EditorApplication.isPlaying = false;
         }
     }
 
