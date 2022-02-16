@@ -14,11 +14,16 @@ public class RestartButton : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetMouseButtonDown(0))
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
+        
+        
     }
 
+    public void OnMouseDown()
+    {
+        print("Button Pressed");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    
     
 }
