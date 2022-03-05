@@ -21,8 +21,8 @@ public class Quit : MonoBehaviour
 
     public void OnMouseDown()
     {
-        UnityEditor.EditorApplication.ExitPlaymode();
-        //Application.Quit();
+        //UnityEditor.EditorApplication.ExitPlaymode();
+        Application.Quit();
     }
     
     

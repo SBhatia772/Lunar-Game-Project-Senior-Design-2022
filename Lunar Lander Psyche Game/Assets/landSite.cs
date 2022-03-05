@@ -45,7 +45,9 @@ public class landSite : MonoBehaviour
         yield return new WaitForSeconds(3f);
 
 
-        if (player.velocity >= 0.2f || Vector2.Dot(player.transform.up, Vector2.down) >= 0)
+        Vector2 playerDirection = new Vector2(0, collision.transform.up.y);
+
+        if (player.velocity >= 0.2f || Mathf.Cos(Vector2.Angle(playerDirection, Vector2.down)) >= -0.4f)
         {
             player.gameOver = true;
             print("Game Over!");

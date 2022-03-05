@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
 
     public bool gameOver = false;
 
+    public bool gameEnding = false;
+
     public static bool landingSite = false;
 
     public bool landed = false;
@@ -38,6 +40,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        gameOver = false;
         quitButton = GameObject.Find("Quit");
         quitButton.GetComponent<Renderer>().enabled = false;
         quitButton.SetActive(false);
@@ -58,14 +61,18 @@ public class PlayerController : MonoBehaviour
         gameOverScreen.GetComponent<Renderer>().enabled = false;
     }
 
+
+
+   
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
+
         velocity = rb.velocity.magnitude;
 
-        if (Input.GetKey(KeyCode.Space) && fuel > 0)
+        if (Input.GetKey(KeyCode.Space) && fuel > 0 && gameEnding == false)
         {
-            rb.AddForce(transform.up * 0.050f);
+            rb.AddForce(transform.up * 0.200f);
 
             fuel -= 0.1f;
 
@@ -78,41 +85,53 @@ public class PlayerController : MonoBehaviour
             gas.GetComponent<Renderer>().enabled = false;
         }
 
-        if(Input.GetKey(KeyCode.A))
+
+
+        if (Input.GetKey(KeyCode.A) && gameEnding == false)
         {
-            transform.Rotate(0, 0, 1f);
+            
+            transform.Rotate(new Vector3(0, 0, 3f));
         }
 
-        if(Input.GetKey(KeyCode.D))
-        {
-            transform.Rotate(0, 0, -1f);
+        if(Input.GetKey(KeyCode.D) && gameEnding == false)
+        { 
+            transform.Rotate(new Vector3(0, 0, -3f));
         }
 
 
-        if(transform.position.y >= 6f)
+        if(transform.position.y >= 6.79f)
         {
-            transform.position = new Vector3(transform.position.x, 5.847f, transform.position.z);
+            transform.position = new Vector3(transform.position.x, 6.15f, transform.position.z);
         }
 
-        if(transform.position.x <= -14.25f)
+        if(transform.position.x <= -11.63f)
         {
-            transform.position = new Vector3(-14.13f, transform.position.y, transform.position.z);
+            transform.position = new Vector3(-11f, transform.position.y, transform.position.z);
         }
 
-        if (transform.position.x >= 10.69f)
+        if (transform.position.x >= 7.46f)
         {
-            transform.position = new Vector3(10.3f, transform.position.y, transform.position.z);
+            transform.position = new Vector3(7.15f, transform.position.y, transform.position.z);
         }
 
 
         if (fuel < 0)
             fuel = 0;
 
+       
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (velocity >= 0.2f || Mathf.Cos(Vector2.Angle(transform.up, Vector2.down)) >= -0.4f)
+
+        Vector2 playerDirection = new Vector2(0, transform.up.y);
+
+        if(collision.gameObject.name.Equals("Site 1") || collision.gameObject.name.Equals("Site 2") || collision.gameObject.name.Equals("Site 3") || collision.gameObject.name.Equals("Site 4") || collision.gameObject.name.Equals("Site 5") || collision.gameObject.name.Equals("Site 6") || collision.gameObject.name.Equals("Site 7"))
+        {
+            landingSite = true;
+        }
+
+        if (velocity >= 0.2f || Mathf.Cos(Vector2.Angle(playerDirection, Vector2.down)) >= -0.4f)
         {
             gameOver = true;
             //print("Game Over!");
@@ -122,17 +141,19 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(Wait());
 
         }
-        else if (landingSite == false && landed == false)
+        else if (landingSite == false)
         {
-            landed = true;
             StartCoroutine(CloseGame());
         }
-
-        if(gameOver == true)
+        else if (landingSite == true)
         {
-            StartCoroutine(Wait());
+            Debug.Log("Close Game Coroutine Started!");
+            gameOver = false;
+            gameEnding = true;
+            StartCoroutine(CloseGame());
         }
         
+
     }
 
     IEnumerator Wait()
@@ -145,15 +166,16 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
 
         explosion.GetComponent<Renderer>().enabled = false;
-
+        
         lander.SetActive(false);
         quitButton.SetActive(true);
         retryButton.SetActive(true);
 
+        gameOverScreen.GetComponent<Renderer>().enabled = true;
         quitButton.GetComponent<Renderer>().enabled = true;
         retryButton.GetComponent<Renderer>().enabled = true;
         
-        //Application.Quit();
+        
     } 
 
 
@@ -176,15 +198,21 @@ public class PlayerController : MonoBehaviour
 
         yield return new WaitForSeconds(2f);
 
-        if (velocity >= 0.2f || Vector2.Dot(transform.up, Vector2.down) >= 0)
+        Vector2 playerDirection = new Vector2(0, transform.up.y);
+
+        if (velocity >= 0.2f || Mathf.Cos(Vector2.Angle(playerDirection, Vector2.down)) >= -0.4f)
         {
             gameOver = true;
-            //print("Game Over!");
+            
+            score = 0;  
 
             StartCoroutine(Wait());
         }
 
-        yield return new WaitForSeconds(3f);
+        Debug.Log(landingSite.ToString());  
+        Debug.Log("gameOver: " + gameOver.ToString());
+
+        yield return new WaitForSeconds(1f);
 
         if (gameOver == false && landingSite == false) //we haven't reached a landing site but we have landed
         {
@@ -194,6 +222,12 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(1f);
 
             //show you win screen
+        }
+        else if (landingSite == true)
+        {
+            yield return new WaitForSeconds(1f);
+            Debug.Log("Success");
+            UnityEditor.EditorApplication.ExitPlaymode();
         }
 
         
